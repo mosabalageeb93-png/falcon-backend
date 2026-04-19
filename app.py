@@ -1,19 +1,14 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import os
 
 app = Flask(__name__)
-CORS(app) # للسماح للموقع بالاتصال بالسيرفر من أي مكان
+# هذا السطر يسمح لموقعك على GitHub Pages بالاتصال بالسيرفر
+CORS(app)
 
-# قاعدة البيانات (يمكنك إضافة طلاب أكثر هنا)
-students_db = {
-    "12345678": {
-        "password": "00000000",
-        "name": "مصعب العاقب محمد أحمد",
-        "id": "31001418-25",
-        "batch": "24",
-        "college": "كلية القلم"
-    }
+# بيانات تجريبية للدخول (يمكنك تغييرها أو ربطها بقاعدة بياناتك لاحقاً)
+USERS = {
+    "24001": {"password": "123", "name": "مصعب العجيب", "student_id": "24001", "batch": "24"},
+    "24002": {"password": "456", "name": "أحمد محمد", "student_id": "24002", "batch": "24"}
 }
 
 @app.route('/')
@@ -22,24 +17,22 @@ def home():
 
 @app.route('/login', methods=['POST'])
 def login():
-    try:
-        data = request.json
-        username = data.get('username')
-        password = data.get('password')
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
 
-        if username in students_db and students_db[username]['password'] == password:
-            return jsonify({
-                "status": "success",
-                "name": students_db[username]['name'],
-                "student_id": students_db[username]['id'],
-                "batch": students_db[username]['batch']
-            }), 200
-        else:
-            return jsonify({"status": "error", "message": "الرقم الجامعي أو كلمة المرور خطأ"}), 401
-    except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
+    if username in USERS and USERS[username]['password'] == password:
+        return jsonify({
+            "status": "success",
+            "name": USERS[username]['name'],
+            "student_id": USERS[username]['student_id'],
+            "batch": USERS[username]['batch']
+        }), 200
+    else:
+        return jsonify({
+            "status": "error",
+            "message": "رقم الجلوس أو كلمة المرور غير صحيحة"
+        }), 401
 
 if __name__ == '__main__':
-    # استخدام المنفذ الذي يحدده Render تلقائياً
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(debug=True)

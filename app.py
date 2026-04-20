@@ -1,15 +1,16 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from pymongo import MongoClient
+import pymongo
 
 app = Flask(__name__)
 CORS(app)
 
-# رابط قاعدة بياناتك الذي استخرجناه سوياً
+# الرابط المعدل مع كلمة السر الجديدة Mosab@2026
 MONGO_URI = "mongodb+srv://mosabalageeb93_db_user:Mosab%402026@cluster0.m7ov7k5.mongodb.net/?appName=Cluster0"
-client = MongoClient(MONGO_URI)
+
+client = pymongo.MongoClient(MONGO_URI)
 db = client['falcon_system']
-students_collection = db['students']
+collection = db['students']
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -17,8 +18,8 @@ def login():
     username = data.get('username')
     password = data.get('password')
 
-    # البحث عن الطالب في MongoDB
-    student = students_collection.find_one({"student_id": username, "password": password})
+    # البحث عن الطالب في قاعدة البيانات
+    student = collection.find_one({"student_id": username, "password": password})
 
     if student:
         return jsonify({
@@ -26,7 +27,7 @@ def login():
             "name": student['name'],
             "student_id": student['student_id'],
             "batch": student.get('batch', '6')
-        })
+        }), 200
     else:
         return jsonify({"status": "error", "message": "رقم الجلوس أو كلمة المرور خطأ"}), 401
 

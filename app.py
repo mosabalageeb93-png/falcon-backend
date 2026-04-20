@@ -1,9 +1,10 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import pymongo
+from pymongo import MongoClient
 
 app = Flask(__name__)
-CORS(app)
+# هذا السطر هو مفتاح الحل للسماح بالاتصال من أي مكان
+CORS(app, resources={r"/*": {"origins": "*"}}) 
 
 # الرابط المعدل مع كلمة السر الجديدة Mosab@2026
 MONGO_URI = "mongodb+srv://mosabalageeb93_db_user:Mosab%402026@cluster0.m7ov7k5.mongodb.net/?appName=Cluster0"

@@ -6,7 +6,7 @@ app = Flask(__name__)
 CORS(app)
 
 # رابط قاعدة بياناتك الذي استخرجناه سوياً
-MONGO_URI = "mongodb+srv://mosabalageeb93_db_user:GfaNn80clHnOCKnX@cluster0.m7ov7k5.mongodb.net/?appName=Cluster0"
+MONGO_URI = "mongodb+srv://mosabalageeb93_db_user:Mosab%402026@cluster0.m7ov7k5.mongodb.net/?appName=Cluster0"
 client = MongoClient(MONGO_URI)
 db = client['falcon_system']
 students_collection = db['students']
@@ -25,7 +25,7 @@ def login():
             "status": "success",
             "name": student['name'],
             "student_id": student['student_id'],
-            "batch": student.get('batch', '24')
+            "batch": student.get('batch', '6')
         })
     else:
         return jsonify({"status": "error", "message": "رقم الجلوس أو كلمة المرور خطأ"}), 401
